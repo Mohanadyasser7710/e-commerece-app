@@ -40,6 +40,10 @@ public class OrderEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false)
     private AddressEntity address;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "coupon_id")
+    private CouponEntity coupon;
+    private double discountAmount;
     private Double totalPrice;
 
 }
