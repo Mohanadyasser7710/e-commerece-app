@@ -9,5 +9,5 @@ import com.e_commere.e_commerece_app.entity.UserEntity;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    Optional<UserEntity> findByName(String name);
+    Optional<UserEntity> findByEmail(String email);
 }
