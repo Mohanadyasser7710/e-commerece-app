@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 public class UserController {
     private final UserService service;
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<UserResponseDto>> getAllUsers() {
         List<UserResponseDto> users = service.getAllUsers();
         return ResponseEntity.ok(users);
@@ -45,6 +45,12 @@ public class UserController {
         UserResponseDto dto = service.newUser(newdto);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
+    public record LoginDto(String email, String password) {}
+    @PostMapping("/login")
+    public ResponseEntity<JwtResponse> loginUser(@RequestBody @Valid LoginDto loginDto) {
+        String jwt = service.loginAndGetToken(loginDto.email(), loginDto.password());
+        return ResponseEntity.ok(new JwtResponse(jwt));
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<UserResponseDto> editUser(@PathVariable Long id, @RequestBody @Valid UserRequestDto oldDto) {
@@ -56,6 +62,21 @@ public class UserController {
     public ResponseEntity<String> deleteUser(@PathVariable long id) {
         service.deleteUser(id);
         return ResponseEntity.ok("user deleted");
+    }
+    class JwtResponse {
+        private String token;
+
+        public JwtResponse(String token) {
+            this.token = token;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
     }
 
 }

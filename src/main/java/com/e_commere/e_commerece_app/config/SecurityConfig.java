@@ -1,29 +1,52 @@
 package com.e_commere.e_commerece_app.config;
 
+
+
+import com.e_commere.e_commerece_app.security.JWTFilter;
+import com.e_commere.e_commerece_app.security.TokenProvider;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
 
 public class SecurityConfig {
-
+    private final TokenProvider tokenProvider;
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "/register", "/login").permitAll()
-                        .anyRequest().authenticated())
-                .formLogin(Customizer.withDefaults()).httpBasic(Customizer.withDefaults());
+    public SecurityFilterChain defaultSecurityFilterChain (HttpSecurity http) throws Exception {
+        http.csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(new JWTFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/users/login").permitAll()
+                        .requestMatchers("/api/users").permitAll()
+                        .anyRequest()
+                        .authenticated()
+                );
         return http.build();
     }
-
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder defaultPasswordEncoder(){
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public AuthenticationManager defaultAuthenticationManager(AuthenticationConfiguration config) throws Exception{
+        return config.getAuthenticationManager();
+    }
+
+
+
+
 }
