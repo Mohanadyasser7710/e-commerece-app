@@ -34,5 +34,5 @@ public class CartItemEntity {
     @JoinColumn(name = "product_id")
     private ProductEntity product;
 
-    private int quanitiy;
+    private int quantity;
 }
