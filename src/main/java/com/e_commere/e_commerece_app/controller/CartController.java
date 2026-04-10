@@ -16,6 +16,8 @@ import com.e_commere.e_commerece_app.service.CartService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor
@@ -23,8 +25,8 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/add")
-    public ResponseEntity<CartResponseDto> addToCart(@RequestBody @Valid AddToCartRequestDto request) {
-        CartResponseDto response = cartService.addToCart(request);
+    public ResponseEntity<CartResponseDto> addToCart(@RequestBody @Valid AddToCartRequestDto request, Principal principal) {
+        CartResponseDto response = cartService.addToCart(request,principal.getName());
         return ResponseEntity.ok(response);
     }
 

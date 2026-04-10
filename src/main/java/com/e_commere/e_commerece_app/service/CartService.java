@@ -3,6 +3,8 @@ package com.e_commere.e_commerece_app.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.e_commere.e_commerece_app.entity.UserEntity;
+import com.e_commere.e_commerece_app.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,12 +27,12 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public CartResponseDto addToCart(AddToCartRequestDto request) {
-        CartEntity cart = cartRepository.findById(request.getCartId())
-                .orElseThrow(() -> new EntityNotFoundException("Cart with id " + request.getCartId() + " not found"));
-
+    public CartResponseDto addToCart(AddToCartRequestDto request,String userName) {
+        UserEntity user=userRepository.findByEmail(userName).orElseThrow(()-> new EntityNotFoundException("User with email " + userName + " not found"));
+        CartEntity cart=cartRepository.findByUser(user).orElseThrow(()-> new EntityNotFoundException("Cart for user with email " + userName + " not found"));
         ProductEntity product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new EntityNotFoundException("Product with id " + request.getProductId() + " not found"));
 

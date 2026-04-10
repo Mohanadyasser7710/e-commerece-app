@@ -1,0 +1,9 @@
+mohanad@gmail.com
+mohanad123
+
+
+
+@ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDuplicateEntry(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("this record already exist");
+    }
