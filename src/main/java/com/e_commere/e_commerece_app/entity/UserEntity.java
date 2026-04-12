@@ -1,10 +1,6 @@
 package com.e_commere.e_commerece_app.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,5 +22,11 @@ public class UserEntity {
     private String password;
     private String email;
     private String role;
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private CartEntity cart;
+    public void addCart(CartEntity cart) {
+        this.cart = cart;
+        cart.setUser(this);
+    }
 
 }

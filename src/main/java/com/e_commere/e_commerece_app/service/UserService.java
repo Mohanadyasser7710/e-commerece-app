@@ -2,6 +2,7 @@ package com.e_commere.e_commerece_app.service;
 
 import java.util.List;
 
+import com.e_commere.e_commerece_app.entity.CartEntity;
 import com.e_commere.e_commerece_app.security.TokenProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -43,9 +44,12 @@ public class UserService {
 
     @Transactional
     public UserResponseDto newUser(UserRequestDto dto) {
-        UserEntity olduser = mapToEntity(dto);
-        UserEntity newuser = repo.save(olduser);
-        return mapToResponse(newuser);
+        UserEntity newUser=mapToEntity(dto);
+        CartEntity newCart= new CartEntity();
+        newCart.setTotalPrice(0.0);
+        newUser.addCart(newCart);
+        repo.save(newUser);
+        return mapToResponse(newUser);
 
     }
 
