@@ -57,16 +57,18 @@ public class CartService {
     }
 
     @Transactional(readOnly = true)
-    public CartResponseDto getCart(Long cartId) {
-        CartEntity cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new EntityNotFoundException("Cart with id " + cartId + " not found"));
+    public CartResponseDto getCart(String email) {
+        UserEntity user=userRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("User with email " + email + " not found"));
+        CartEntity cart = cartRepository.findByUser(user)
+                .orElseThrow(() -> new EntityNotFoundException("Cart for user with email " + email + " not found"));
+
         return mapToResponse(cart);
     }
 
     @Transactional
-    public CartResponseDto removeItemFromCart(Long cartId, Long productId) {
-        CartEntity cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new EntityNotFoundException("Cart with id " + cartId + " not found"));
+    public CartResponseDto removeItemFromCart(String email, Long productId) {
+        UserEntity user=userRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("User with email " + email + " not found"));
+        CartEntity cart=cartRepository.findByUser(user).orElseThrow(()-> new EntityNotFoundException("Cart for user with email " + email + " not found"));
 
         ProductEntity product = productRepository.findById(productId)
                 .orElseThrow(() -> new EntityNotFoundException("Product with id " + productId + " not found"));
@@ -84,9 +86,10 @@ public class CartService {
     }
 
     @Transactional
-    public void clearCart(Long cartId) {
-        CartEntity cart = cartRepository.findById(cartId)
-                .orElseThrow(() -> new EntityNotFoundException("Cart with id " + cartId + " not found"));
+    public void clearCart(String email) {
+        UserEntity user=userRepository.findByEmail(email).orElseThrow(()-> new EntityNotFoundException("User with email " + email + " not found"));
+        CartEntity cart=cartRepository.findByUser(user).orElseThrow(()-> new EntityNotFoundException("Cart for user with email " + email + " not found"));
+
 
         cart.getItems().clear();
         cart.setTotalPrice(0.0);

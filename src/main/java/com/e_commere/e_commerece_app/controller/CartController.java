@@ -30,21 +30,21 @@ public class CartController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{cartId}")
-    public ResponseEntity<CartResponseDto> getCart(@PathVariable Long cartId) {
-        CartResponseDto response = cartService.getCart(cartId);
+    @GetMapping()
+    public ResponseEntity<CartResponseDto> getCart(Principal principal) {
+        CartResponseDto response = cartService.getCart(principal.getName());
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{cartId}/items/{productId}")
-    public ResponseEntity<CartResponseDto> removeItemFromCart(@PathVariable Long cartId, @PathVariable Long productId) {
-        CartResponseDto response = cartService.removeItemFromCart(cartId, productId);
+    @DeleteMapping("/items/{productId}")
+    public ResponseEntity<CartResponseDto> removeItemFromCart(Principal principal, @PathVariable Long productId) {
+        CartResponseDto response = cartService.removeItemFromCart(principal.getName(), productId);
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/{cartId}")
-    public ResponseEntity<String> clearCart(@PathVariable Long cartId) {
-        cartService.clearCart(cartId);
+    @DeleteMapping()
+    public ResponseEntity<String> clearCart(Principal principal) {
+        cartService.clearCart(principal.getName());
         return ResponseEntity.ok("Cart cleared");
     }
 }
