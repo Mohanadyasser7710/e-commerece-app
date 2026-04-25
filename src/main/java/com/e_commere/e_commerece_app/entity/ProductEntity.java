@@ -27,6 +27,7 @@ public class ProductEntity {
     private Long id;
     private String name;
     private Double price;
+    private int stockQuantity;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     private CategoryEntity category;

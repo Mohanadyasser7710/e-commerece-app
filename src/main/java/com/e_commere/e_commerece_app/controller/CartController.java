@@ -1,6 +1,7 @@
 package com.e_commere.e_commerece_app.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,26 +26,26 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/add")
-    public ResponseEntity<CartResponseDto> addToCart(@RequestBody @Valid AddToCartRequestDto request, Principal principal) {
-        CartResponseDto response = cartService.addToCart(request,principal.getName());
+    public ResponseEntity<CartResponseDto> addToCart(@RequestBody @Valid AddToCartRequestDto request, Authentication authentication) {
+        CartResponseDto response = cartService.addToCart(request,authentication.getName());
         return ResponseEntity.ok(response);
     }
 
     @GetMapping()
-    public ResponseEntity<CartResponseDto> getCart(Principal principal) {
-        CartResponseDto response = cartService.getCart(principal.getName());
+    public ResponseEntity<CartResponseDto> getCart(Authentication authentication) {
+        CartResponseDto response = cartService.getCart(authentication.getName());
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/items/{productId}")
-    public ResponseEntity<CartResponseDto> removeItemFromCart(Principal principal, @PathVariable Long productId) {
-        CartResponseDto response = cartService.removeItemFromCart(principal.getName(), productId);
+    public ResponseEntity<CartResponseDto> removeItemFromCart(Authentication authentication, @PathVariable Long productId) {
+        CartResponseDto response = cartService.removeItemFromCart(authentication.getName(), productId);
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping()
-    public ResponseEntity<String> clearCart(Principal principal) {
-        cartService.clearCart(principal.getName());
+    public ResponseEntity<String> clearCart(Authentication authentication) {
+        cartService.clearCart(authentication.getName());
         return ResponseEntity.ok("Cart cleared");
     }
 }

@@ -12,5 +12,5 @@ public class OrderItemResponseDto {
     private Long orderId;
     private Long productId;
     private int quantity;
-    private int price;
+    private Double price;
 }

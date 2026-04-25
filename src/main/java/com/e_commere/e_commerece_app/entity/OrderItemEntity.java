@@ -37,6 +37,6 @@ public class OrderItemEntity {
     @Column(nullable = false)
     private int quantity;
     @Column(nullable = false)
-    private int price;
+    private Double price;
 
 }
