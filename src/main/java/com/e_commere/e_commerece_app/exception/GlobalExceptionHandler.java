@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<String> handleTypeMistmatch(MethodArgumentTypeMismatchException ex) {
+    public ResponseEntity<String> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 "invalid parameter name" + ex.getName() + "the name should be" + ex.getRequiredType().getSimpleName());
     }
