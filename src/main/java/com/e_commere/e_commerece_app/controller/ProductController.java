@@ -5,6 +5,7 @@ import com.e_commere.e_commerece_app.dto.ProductResponseDto;
 import com.e_commere.e_commerece_app.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,9 +19,13 @@ public class ProductController {
     private final ProductService service;
 
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts(){
-        List<ProductResponseDto> response=service.getAllProducts();
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Page<ProductResponseDto>> getProducts(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        return ResponseEntity.ok(service.getProducts(keyword, categoryId, page, size));
     }
 
     @PostMapping

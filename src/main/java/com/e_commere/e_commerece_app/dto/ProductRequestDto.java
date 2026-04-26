@@ -1,5 +1,6 @@
 package com.e_commere.e_commerece_app.dto;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -18,4 +19,6 @@ public class ProductRequestDto {
     private Double price;
     @NotNull(message = "categoryId cannot be null")
     private Long categoryId;
+    @Min(value = 0, message = "Stock quantity cannot be negative")
+    private int stockQuantity;
 }

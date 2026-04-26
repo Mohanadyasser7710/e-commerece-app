@@ -7,6 +7,9 @@ import com.e_commere.e_commerece_app.entity.ProductEntity;
 import com.e_commere.e_commerece_app.repository.CategoryRepository;
 import com.e_commere.e_commerece_app.repository.ProductRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -31,17 +34,29 @@ public class ProductService {
         ProductEntity product=productRepo.findById(id).orElseThrow(()-> new EntityNotFoundException("Product with id " + id + " was not found"));
         return mapToResponse(product);
     }
-    @Transactional(readOnly = true)
-    public List<ProductResponseDto> getAllProducts(){
-        return productRepo.findAll().stream().map(this::mapToResponse).toList();
+
+    public Page<ProductResponseDto> getProducts(String keyword, Long categoryId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ProductEntity> productPage;
+        if (keyword != null && !keyword.isBlank() && categoryId != null) {
+            productPage = productRepo.findByNameContainingIgnoreCaseAndCategoryId(keyword, categoryId, pageable);
+        } else if (keyword != null && !keyword.isBlank()) {
+            productPage = productRepo.findByNameContainingIgnoreCase(keyword, pageable);
+        } else if (categoryId != null) {
+            productPage = productRepo.findByCategoryId(categoryId, pageable);
+        } else {
+            productPage = productRepo.findAll(pageable);
+        }
+        return productPage.map(this::mapToResponse);
     }
     @Transactional
     public ProductResponseDto updateProduct(Long id, ProductRequestDto request){
         ProductEntity oldProduct=productRepo.findById(id).orElseThrow(()->new EntityNotFoundException("Product with id " + id + " was not found"));
-        CategoryEntity category=categoryRepo.findById(request.getCategoryId()).orElseThrow(()->new EntityNotFoundException("Product with id " + id + " was not found"));
+        CategoryEntity category=categoryRepo.findById(request.getCategoryId()).orElseThrow(()->new EntityNotFoundException("Category was not found"));
         oldProduct.setName(request.getName());
         oldProduct.setPrice(request.getPrice());
         oldProduct.setCategory(category);
+        oldProduct.setStockQuantity(request.getStockQuantity());
         ProductEntity updated=productRepo.save(oldProduct);
         return mapToResponse(updated);
     }
@@ -57,6 +72,7 @@ public class ProductService {
         product.setName(dto.getName());
         product.setCategory(categoryRepo.findById(dto.getCategoryId()).orElseThrow(()-> new EntityNotFoundException("the id you entered was not found in the database ")));
         product.setPrice(dto.getPrice());
+        product.setStockQuantity(dto.getStockQuantity());
         return product;
     }
 
@@ -70,4 +86,6 @@ public class ProductService {
         return dto;
 
     }
+
+
 }
