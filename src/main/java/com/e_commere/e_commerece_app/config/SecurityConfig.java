@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/categories/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/categories/**").hasRole("ADMIN")
                                 .requestMatchers(HttpMethod.GET, "/api/payments/success", "/api/payments/cancel").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/payments/webhook").permitAll()
                                 .anyRequest().authenticated()
                 );
         return http.build();
