@@ -32,14 +32,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/users/login").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/users/register").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/reviews/product/**").permitAll()
-                                .requestMatchers("/api/orders/admin/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.POST, "/api/products/**", "/api/categories/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/categories/**").hasAuthority("ADMIN")
-                                .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/categories/**").hasAuthority("ADMIN")
+                                .requestMatchers("/api/orders/admin/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.POST, "/api/products/**", "/api/categories/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT, "/api/products/**", "/api/categories/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE, "/api/products/**", "/api/categories/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/payments/success", "/api/payments/cancel").permitAll()
                                 .anyRequest().authenticated()
                 );
         return http.build();
